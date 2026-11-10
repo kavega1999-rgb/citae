@@ -59,6 +59,8 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-gold: var(--gold);
+  --color-rose: var(--rose);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -76,25 +78,27 @@
 
 :root {
   --radius: 0.25rem;
-  --background: oklch(0.97 0.012 80);
-  --foreground: oklch(0.28 0.025 70);
-  --card: oklch(0.99 0.008 80);
-  --card-foreground: oklch(0.28 0.025 70);
-  --popover: oklch(0.99 0.008 80);
-  --popover-foreground: oklch(0.28 0.025 70);
-  --primary: oklch(0.48 0.05 145);
-  --primary-foreground: oklch(0.97 0.012 80);
-  --secondary: oklch(0.92 0.02 80);
-  --secondary-foreground: oklch(0.28 0.025 70);
-  --muted: oklch(0.93 0.015 80);
-  --muted-foreground: oklch(0.5 0.025 70);
-  --accent: oklch(0.72 0.07 60);
-  --accent-foreground: oklch(0.2 0.02 70);
+  --background: oklch(0.966 0.008 58);
+  --foreground: oklch(0.348 0.032 350);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.348 0.032 350);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.862 0.038 2);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.956 0.003 48);
+  --muted-foreground: oklch(0.507 0.022 350);
+  --accent: oklch(0.93 0.02 2);
+  --accent-foreground: var(--foreground);
+  --gold: oklch(0.737 0.086 79);
+  --rose: oklch(0.787 0.052 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.86 0.02 80);
-  --input: oklch(0.86 0.02 80);
-  --ring: oklch(0.48 0.05 145);
+  --border: oklch(0.905 0.01 15);
+  --input: var(--border);
+  --ring: var(--rose);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -111,6 +115,8 @@
 }
 
 .dark {
+  --gold: oklch(0.737 0.086 79);
+  --rose: oklch(0.787 0.052 0);
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
@@ -143,6 +149,16 @@
   --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
+}
+
+.welcome-band {
+  background: color-mix(in oklch, var(--secondary) 42%, var(--background));
+}
+
+body { letter-spacing: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
 
 @layer base {

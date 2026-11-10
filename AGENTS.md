@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Application presentation
+- Keep administrative presentation in a shared UI module with thin, individually titled content routes so the product shell remains consistent.
+- Keep the public booking presentation separate from the administrative shell; business identity must not replace product identity.
+- Unconnected visual views show unavailable-data placeholders and never imply loaded records or perform business mutations.
