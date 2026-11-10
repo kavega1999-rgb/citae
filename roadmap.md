@@ -1,6 +1,6 @@
 # CITAE visual redesign
 
-- [ ] Apply CITAE identity and shared visual system.
-- [ ] Present administrative views with neutral unavailable-data states.
-- [ ] Present the public booking experience without changing booking logic.
-- [ ] Verify navigation and mobile layout; preserve all Supabase and authentication files.
+- [x] Apply CITAE identity and shared visual system.
+- [x] Present administrative views with neutral unavailable-data states.
+- [x] Present the public booking experience without changing booking logic.
+- [x] Verify navigation and mobile layout; preserve all Supabase and authentication files.
