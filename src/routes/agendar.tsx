@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, CalendarDays, Check, ChevronRight, Store } from "lucide-react";
+import { ArrowLeft, CalendarDays, ChevronRight, Store } from "lucide-react";
 import { Wordmark, pageHead } from "@/components/citae-shell";
 import { Button } from "@/components/ui/button";
 

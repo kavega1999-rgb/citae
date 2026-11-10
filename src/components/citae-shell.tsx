@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowDownLeft, ArrowUpRight, CalendarDays, CalendarCheck2, ChevronLeft, ChevronRight, CreditCard, LayoutDashboard, Menu, Settings2, Sparkles, Users, X, Clock3, CircleHelp, Store, ListFilter } from "lucide-react";
+import { ArrowUpRight, CalendarDays, CalendarCheck2, CreditCard, LayoutDashboard, Menu, Settings2, Sparkles, Users, X, Clock3, CircleHelp, Store, ListFilter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { es } from "date-fns/locale";
@@ -23,7 +23,7 @@ export function pageHead(title: string, description: string) {
 
 export function Wordmark() { return <span className="font-display text-[32px] leading-none">CITAE<span className="text-gold">.</span></span>; }
 
-function EmptyState({ icon: Icon = CalendarDays, title, detail }: { icon?: typeof CalendarDays; title: string; detail: string }) {
+function EmptyState({ icon: Icon = CalendarDays, title, detail }: { icon?: typeof CalendarDays | undefined; title: string; detail: string }) {
   return <div className="flex min-h-60 flex-col items-center justify-center px-5 py-12 text-center"><span className="mb-5 flex size-12 items-center justify-center rounded-full bg-secondary text-primary"><Icon size={21} strokeWidth={1.4} /></span><h3 className="text-base font-medium">{title}</h3><p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">{detail}</p></div>;
 }
 
