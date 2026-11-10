@@ -81,11 +81,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Spa Studio" },
-      { name: "description", content: "Spa Studio — rituals of calm" },
+      { title: "CITAE" },
+      { name: "description", content: "CITAE — Tu tiempo, mejor organizado." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Spa Studio" },
-      { property: "og:description", content: "Spa Studio — rituals of calm" },
+      { property: "og:title", content: "CITAE" },
+      { property: "og:description", content: "CITAE — Tu tiempo, mejor organizado." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <HeadContent />
       </head>
