@@ -6,6 +6,6 @@
 - [x] Verify navigation and mobile layout; preserve all Supabase and authentication files.
 
 ## Phase 2: public business settings
-- [ ] Read public configuration through the existing browser RPC and show business identity, currency and deposit.
-- [ ] Keep payment details exclusive to the payment stage without adding booking or upload operations.
-- [ ] Run tests and verify live settings, error and missing states on desktop and mobile.
+- [x] Read public configuration through the existing browser RPC and show business identity, currency and deposit.
+- [x] Keep payment details exclusive to the payment stage without adding booking or upload operations.
+- [x] Run tests and verify live settings, error and missing states on desktop and mobile.
