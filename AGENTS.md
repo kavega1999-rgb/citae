@@ -42,4 +42,5 @@ use the editor.
 - Keep admin reads and mutations in authenticated server functions, checking the existing is_admin RPC and retaining user-scoped RLS; this prevents browser state from granting access.
 - Use only create_public_appointment_v2 for public creation and get_available_slots for availability; the existing RPCs remain authoritative for prices and scheduling.
 - Issue signed proof uploads only after validating the reservation token, status and deadline, and restrict paths to that reservation; the existing private bucket has no public insert policy.
+- Register uploaded proofs through a token-validated server function calling the existing submit_payment_proof RPC; browser roles lack execute permission and must not gain broader grants.
 - Keep reservation access tokens out of URLs and shared logs; session storage and user-requested access files retain the capability without exposing it through referrers.
