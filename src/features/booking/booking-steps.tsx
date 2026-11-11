@@ -22,8 +22,8 @@ export function BookingSteps({stage,ids,settings,onBack,onCreated,onTime}: {stag
 export function BookingResult({created,settings,onNew}: {created:CreatedBooking;settings:PublicBookingSettings|null;onNew:()=>void}) {
  const prepare=useServerFn(prepareProofUpload),[busy,setBusy]=useState(false),[error,setError]=useState(''),[file,setFile]=useState<File|null>(null);
  const query=useQuery({queryKey:['public-appointment',created.appointment_id],refetchInterval:30000,queryFn:async()=>{const {data,error}=await supabase.rpc('get_public_appointment',{p_appointment_id:created.appointment_id,p_token:created.access_token});if(error)throw error;return data;}});
- const value=query.data, booking=value&&typeof value==='object'&&!Array.isArray(value)?value:null;
- const payment=booking?.['payment'];const p=payment&&typeof payment==='object'&&!Array.isArray(payment)?payment:null;
+ const value=query.data, booking: Record<string,Json|undefined>|null=value&&typeof value==='object'&&!Array.isArray(value)?value as Record<string,Json|undefined>:null;
+ const payment=booking?.['payment'];const p: Record<string,Json|undefined>|null=payment&&typeof payment==='object'&&!Array.isArray(payment)?payment as Record<string,Json|undefined>:null;
  const status=String(booking?.['status']??'pending_payment');const paymentStatus=String(p?.['status']??'pending');
  const deadline=String(booking?.['payment_deadline_at']??created.payment_deadline_at);
  const canUpload=['pending_payment','pending_verification'].includes(status)&&['pending','rejected'].includes(paymentStatus)&&(status!=='pending_payment'||Date.parse(deadline)>Date.now());

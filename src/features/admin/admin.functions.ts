@@ -42,8 +42,17 @@ export const loadAdmin = createServerFn({ method: 'POST' }).middleware([requireS
 export const saveAdmin = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator((v: unknown) => editSchema.parse(v)).handler(async ({ data, context }) => {
  await owner(context.supabase);
  // The discriminated union validates each table's allowed columns before the database call.
- const query = data.id ? context.supabase.from(data.table).update(data.values).eq('id', data.id) : context.supabase.from(data.table).insert(data.values);
- const { error } = await query.select('id').single(); if (error) throw new Error(error.message); return true;
+ const db=context.supabase;
+ let result;
+ switch(data.table) {
+ case 'services': result = await (data.id ? db.from('services').update(data.values).eq('id',data.id) : db.from('services').insert(data.values)).select('id').single(); break;
+ case 'clients': result = await (data.id ? db.from('clients').update(data.values).eq('id',data.id) : db.from('clients').insert(data.values)).select('id').single(); break;
+ case 'business_settings': result = await (data.id ? db.from('business_settings').update(data.values).eq('id',data.id) : db.from('business_settings').insert(data.values)).select('id').single(); break;
+ case 'business_hours': result = await (data.id ? db.from('business_hours').update(data.values).eq('id',data.id) : db.from('business_hours').insert(data.values)).select('id').single(); break;
+ case 'business_hour_slots': result = await (data.id ? db.from('business_hour_slots').update(data.values).eq('id',data.id) : db.from('business_hour_slots').insert(data.values)).select('id').single(); break;
+ case 'blocked_slots': result = await (data.id ? db.from('blocked_slots').update(data.values).eq('id',data.id) : db.from('blocked_slots').insert(data.values)).select('id').single(); break;
+ }
+ if (result.error) throw new Error(result.error.message); return true;
 });
 export const deleteAdmin = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(z.object({ table: z.enum(['business_hours','business_hour_slots','blocked_slots']), id })).handler(async ({ data, context }) => {
  await owner(context.supabase); const { error } = await context.supabase.from(data.table).delete().eq('id',data.id).select('id').single(); if(error) throw new Error(error.message); return true;
