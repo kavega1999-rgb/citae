@@ -39,6 +39,7 @@ use the editor.
 - Keep payment configuration in a stage-gated presentation component; only the payment stage may render identifiers or instructions, without inventing unfinished booking steps.
 
 ## Connected operations
+- Generate direct WhatsApp confirmations from confirmed appointments and approved payments only, using a shared browser-safe formatter; never treat opening WhatsApp as delivery or include access tokens, internal notes or payment identifiers.
 - Keep admin reads and mutations in authenticated server functions, checking the existing is_admin RPC and retaining user-scoped RLS; this prevents browser state from granting access.
 - Use only create_public_appointment_v2 for public creation and get_available_slots for availability; the existing RPCs remain authoritative for prices and scheduling.
 - Issue signed proof uploads only after validating the reservation token, status and deadline, and restrict paths to that reservation; the existing private bucket has no public insert policy.
