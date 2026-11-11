@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDuration, summarize } from "@/routes/agendar";
+import { formatDuration, summarize } from "@/features/booking/booking-page";
 
 const svc = (price: number, duration_minutes: number) => ({ id: String(price), name: "x", description: "", display_order: 0, price, duration_minutes });
 

@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, CalendarDays, Check, ChevronRight, Clock3, RotateCw, Store, X } from "lucide-react";
-import { Wordmark, pageHead } from "@/components/citae-shell";
+import { Wordmark } from "@/components/citae-shell";
+import { brandStyle, useMediaUrls } from "@/features/business/business-media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,7 +16,6 @@ import { formatBookingDate } from "@/features/booking/booking-utils";
 
 export type PublicService = Database["public"]["Functions"]["get_public_services"]["Returns"][number];
 
-export const Route = createFileRoute("/agendar")({ head: () => pageHead("Reserva tu cita", "Tu próxima cita, en un solo lugar. Experiencia de reservas CITAE."), component: Booking });
 
 const copFormatter = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 });
 export const formatCOP = (value: number) => copFormatter.format(value);
@@ -41,6 +41,8 @@ export function Booking({ slug }: { slug?: string }) {
   const { data: services = [], isLoading, isError, refetch, isFetching } = useQuery({ queryKey: ["public-services", slug ?? "legacy"], queryFn: () => fetchPublicServices(slug) });
   const settingsQuery = useQuery({ queryKey: ["public-booking-settings", slug ?? "legacy"], queryFn: () => fetchPublicBookingSettings(slug) });
   const settings = settingsQuery.data;
+  const brand = businessQuery.data;
+  const logo = useMediaUrls(brand?.logo_path ? [brand.logo_path] : [])[brand?.logo_path ?? ""];
   const [stage, setStage] = useState<"services"|"date"|"details"|"payment">("services");
   const [time, setTime] = useState("");
   const [created, setCreated] = useState<CreatedBooking|null>(null);
@@ -51,13 +53,13 @@ export function Booking({ slug }: { slug?: string }) {
   const totals = summarize(selected);
 
   if (businessQuery.isSuccess && !businessQuery.data) return <main className="mx-auto max-w-xl px-5 py-12"><Wordmark /><h1 className="mt-8 font-display text-2xl">Negocio no disponible</h1><p className="mt-4 text-sm text-muted-foreground">Revisa el enlace de reservas.</p></main>;
-  return <div className="min-h-screen bg-background font-sans">
+  return <div className="min-h-screen bg-background font-sans" style={brandStyle(brand?.primary_color, brand?.secondary_color)}>
     <header className="border-b border-border bg-card"><div className="mx-auto grid h-20 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center px-5 md:px-6"><Link to="/" aria-label="CITAE, inicio"><Wordmark /></Link><Button asChild variant="ghost" className="text-muted-foreground"><Link to="/"><ArrowLeft />Mi espacio</Link></Button></div></header>
     <main className="mx-auto max-w-5xl px-5 py-8 md:px-6 md:py-12">
       <p className="mb-3 text-xs uppercase text-muted-foreground">Reservas con CITAE</p>
       <h1 className="font-display text-3xl">Reserva tu cita</h1>
       <div className="mb-7 mt-6 flex items-start gap-3" aria-busy={settingsQuery.isLoading}>
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-md border border-border bg-card"><Store size={20} strokeWidth={1.3} /></span>
+        <span className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-card">{logo ? <img src={logo} alt={`Logo de ${brand?.name ?? "el negocio"}`} className="size-full object-contain" /> : <Store size={20} strokeWidth={1.3} />}</span>
         <div className="min-w-0 flex-1">
           {settingsQuery.isLoading ? <div role="status" aria-label="Cargando información del negocio" className="space-y-2"><Skeleton className="h-5 w-48 max-w-full" /><Skeleton className="h-4 w-36 max-w-full" /></div>
           : settingsQuery.isError ? <div role="alert"><p className="text-sm font-medium">No pudimos cargar la información del negocio</p><Button variant="outline" size="sm" className="mt-2 shadow-none" onClick={() => settingsQuery.refetch()} disabled={settingsQuery.isFetching}><RotateCw className={settingsQuery.isFetching ? "animate-spin" : ""} />Reintentar información</Button></div>
