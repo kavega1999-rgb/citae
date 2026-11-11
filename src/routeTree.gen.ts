@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AgendarRouteImport } from './routes/agendar'
 import { Route as CalendarioRouteImport } from './routes/calendario'
 import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
@@ -19,16 +18,10 @@ import { Route as RecuperarRouteImport } from './routes/recuperar'
 import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as ReservasRouteImport } from './routes/reservas'
 import { Route as ServiciosRouteImport } from './routes/servicios'
-import { Route as AgendarSlugRouteImport } from './routes/agendar_.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgendarRoute = AgendarRouteImport.update({
-  id: '/agendar',
-  path: '/agendar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalendarioRoute = CalendarioRouteImport.update({
@@ -71,15 +64,9 @@ const ServiciosRoute = ServiciosRouteImport.update({
   path: '/servicios',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AgendarSlugRoute = AgendarSlugRouteImport.update({
-  id: '/agendar_/$slug',
-  path: '/agendar/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/agendar': typeof AgendarRoute
   '/calendario': typeof CalendarioRoute
   '/clientes': typeof ClientesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -88,11 +75,9 @@ export interface FileRoutesByFullPath {
   '/registro': typeof RegistroRoute
   '/reservas': typeof ReservasRoute
   '/servicios': typeof ServiciosRoute
-  '/agendar/$slug': typeof AgendarSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agendar': typeof AgendarRoute
   '/calendario': typeof CalendarioRoute
   '/clientes': typeof ClientesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -101,12 +86,10 @@ export interface FileRoutesByTo {
   '/registro': typeof RegistroRoute
   '/reservas': typeof ReservasRoute
   '/servicios': typeof ServiciosRoute
-  '/agendar/$slug': typeof AgendarSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/agendar': typeof AgendarRoute
   '/calendario': typeof CalendarioRoute
   '/clientes': typeof ClientesRoute
   '/configuracion': typeof ConfiguracionRoute
@@ -115,13 +98,11 @@ export interface FileRoutesById {
   '/registro': typeof RegistroRoute
   '/reservas': typeof ReservasRoute
   '/servicios': typeof ServiciosRoute
-  '/agendar_/$slug': typeof AgendarSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/agendar'
     | '/calendario'
     | '/clientes'
     | '/configuracion'
@@ -130,11 +111,9 @@ export interface FileRouteTypes {
     | '/registro'
     | '/reservas'
     | '/servicios'
-    | '/agendar/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/agendar'
     | '/calendario'
     | '/clientes'
     | '/configuracion'
@@ -143,11 +122,9 @@ export interface FileRouteTypes {
     | '/registro'
     | '/reservas'
     | '/servicios'
-    | '/agendar/$slug'
   id:
     | '__root__'
     | '/'
-    | '/agendar'
     | '/calendario'
     | '/clientes'
     | '/configuracion'
@@ -156,12 +133,10 @@ export interface FileRouteTypes {
     | '/registro'
     | '/reservas'
     | '/servicios'
-    | '/agendar_/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AgendarRoute: typeof AgendarRoute
   CalendarioRoute: typeof CalendarioRoute
   ClientesRoute: typeof ClientesRoute
   ConfiguracionRoute: typeof ConfiguracionRoute
@@ -170,7 +145,6 @@ export interface RootRouteChildren {
   RegistroRoute: typeof RegistroRoute
   ReservasRoute: typeof ReservasRoute
   ServiciosRoute: typeof ServiciosRoute
-  AgendarSlugRoute: typeof AgendarSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,13 +154,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agendar': {
-      id: '/agendar'
-      path: '/agendar'
-      fullPath: '/agendar'
-      preLoaderRoute: typeof AgendarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calendario': {
@@ -245,19 +212,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServiciosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/agendar_/$slug': {
-      id: '/agendar_/$slug'
-      path: '/agendar/$slug'
-      fullPath: '/agendar/$slug'
-      preLoaderRoute: typeof AgendarSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AgendarRoute: AgendarRoute,
   CalendarioRoute: CalendarioRoute,
   ClientesRoute: ClientesRoute,
   ConfiguracionRoute: ConfiguracionRoute,
@@ -266,7 +225,6 @@ const rootRouteChildren: RootRouteChildren = {
   RegistroRoute: RegistroRoute,
   ReservasRoute: ReservasRoute,
   ServiciosRoute: ServiciosRoute,
-  AgendarSlugRoute: AgendarSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
