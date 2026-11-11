@@ -4,9 +4,9 @@ import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 
 const id = z.string().uuid();
 const text = z.string().trim().min(1);
-const optional = z.string().nullable().optional();
+const optional = z.string().nullable().default(null);
 const service = z.object({ name: text, description: optional, price: z.number().int().nonnegative(), duration_minutes: z.number().int().positive(), display_order: z.number().int().nonnegative(), is_active: z.boolean() });
-const client = z.object({ full_name: text, phone: text.max(30), email: z.union([z.string().email(), z.literal(''), z.null()]).optional(), notes: optional });
+const client = z.object({ full_name: text, phone: text.max(30), email: z.union([z.string().email(), z.literal(''), z.null()]).default(null), notes: optional });
 const settings = z.object({ business_name: text, timezone: text.refine(v => { try { new Intl.DateTimeFormat('es', { timeZone: v }); return true; } catch { return false; } }, 'Zona horaria inválida'), currency: z.literal('COP'), deposit_percentage: z.number().min(0).max(100), buffer_minutes: z.number().int().nonnegative(), hold_minutes: z.number().int().positive(), cancellation_policy: optional, payment_instructions: optional, nequi_number: optional, daviplata_number: optional, bank_name: optional, account_type: optional, account_number: optional, account_holder: optional });
 const hours = z.object({ weekday: z.number().int().min(0).max(6), opens_at: text, closes_at: text, interval_minutes: z.number().int().positive(), slot_mode: z.enum(['interval','specific']), is_active: z.boolean() }).refine(v => v.closes_at > v.opens_at, 'El cierre debe ser posterior a la apertura');
 const block = z.object({ start_at: z.string().datetime({ offset: true }), end_at: z.string().datetime({ offset: true }), reason: optional }).refine(v => Date.parse(v.end_at) > Date.parse(v.start_at), 'El final debe ser posterior al inicio');
@@ -50,7 +50,9 @@ export const deleteAdmin = createServerFn({ method: 'POST' }).middleware([requir
 });
 export const updateAppointment = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(z.object({ id, status: z.enum(['cancelled','completed','no_show']).optional(), admin_notes: z.string().optional(), cancellation_reason: z.string().optional() })).handler(async ({ data, context }) => {
  await owner(context.supabase); const { id: appointmentId, ...values } = data;
- const { error } = await context.supabase.from('appointments').update(values).eq('id',appointmentId).select('id').single(); if(error) throw new Error(error.message); return true;
+ const clean: {status?: string; admin_notes?: string; cancellation_reason?: string} = {};
+ if(values.status !== undefined) clean.status=values.status; if(values.admin_notes !== undefined) clean.admin_notes=values.admin_notes; if(values.cancellation_reason !== undefined) clean.cancellation_reason=values.cancellation_reason;
+ const { error } = await context.supabase.from('appointments').update(clean).eq('id',appointmentId).select('id').single(); if(error) throw new Error(error.message); return true;
 });
 export const reviewPayment = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator(z.object({ id, approve: z.boolean(), reason: z.string().trim().max(500).optional() })).handler(async ({ data, context }) => {
  await owner(context.supabase);
