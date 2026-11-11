@@ -11,7 +11,7 @@
 - [x] Run tests and verify live settings, error and missing states on desktop and mobile.
 
 ## Complete system using existing Supabase
-- [ ] Send automatic WhatsApp confirmation on deposit approval with reservation date, time, services and actual paid amount; requires WhatsApp Business connection, approved template and durable delivery storage.
+- [ ] Send automatic WhatsApp confirmation on deposit approval with reservation date, time, services and actual paid amount. Blocked: user declined WhatsApp Business connection; approved template, durable delivery storage and deployed callback receiver are also required before activation.
 - [x] Fix payment-proof registration rejected by existing RPC permissions; explain client confirmation delivery.
 - [x] Connect administrative sign-in and owner-authorized data access.
 - [x] Enable services, clients, settings, working hours and blocked times editing.
