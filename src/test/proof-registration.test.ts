@@ -4,7 +4,7 @@ vi.mock('@/integrations/supabase/client.server',()=>({supabaseAdmin:{rpc:mock.rp
 vi.mock('@tanstack/react-start',()=>({
  createServerFn:()=>({
   inputValidator:(schema:{parse:(v:unknown)=>unknown})=>({
-   handler:(fn:(v:{data:unknown})=>unknown)=>(input:{data:unknown})=>fn({data:schema.parse(input.data)})
+   handler:(fn:(v:{data:unknown})=>unknown)=>async(input:{data:unknown})=>fn({data:schema.parse(input.data)})
   })
  })
 }));
