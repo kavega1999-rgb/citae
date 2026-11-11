@@ -5,6 +5,7 @@ import { AlertCircle, ArrowLeft, CalendarDays, Check, ChevronRight, Clock3, Rota
 import { Wordmark, pageHead } from "@/components/citae-shell";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BookingPaymentSettings, fetchPublicBookingSettings } from "@/components/booking-business-settings";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -32,6 +33,8 @@ async function fetchPublicServices(): Promise<PublicService[]> {
 
 function Booking() {
   const { data: services = [], isLoading, isError, refetch, isFetching } = useQuery({ queryKey: ["public-services"], queryFn: fetchPublicServices });
+  const settingsQuery = useQuery({ queryKey: ["public-booking-settings"], queryFn: fetchPublicBookingSettings });
+  const settings = settingsQuery.data;
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setSelectedIds((prev) => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; });
   const selected = useMemo(() => services.filter((s) => selectedIds.has(s.id)), [services, selectedIds]);
@@ -42,7 +45,15 @@ function Booking() {
     <main className="mx-auto max-w-5xl px-5 py-10 md:px-6 md:py-16">
       <p className="mb-3 text-xs uppercase text-muted-foreground">Reservas con CITAE</p>
       <h1 className="font-display text-4xl md:text-5xl">Un momento para ti.</h1>
-      <div className="mb-10 mt-7 flex items-center gap-3"><span className="flex size-11 items-center justify-center rounded-md border border-border bg-card"><Store size={20} strokeWidth={1.3} /></span><div><p className="text-sm font-medium">Nombre del negocio</p><p className="mt-1 text-xs text-muted-foreground">Información del negocio no disponible</p></div></div>
+      <div className="mb-10 mt-7 flex items-start gap-3" aria-busy={settingsQuery.isLoading}>
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-md border border-border bg-card"><Store size={20} strokeWidth={1.3} /></span>
+        <div className="min-w-0 flex-1">
+          {settingsQuery.isLoading ? <div role="status" aria-label="Cargando información del negocio" className="space-y-2"><Skeleton className="h-5 w-48 max-w-full" /><Skeleton className="h-4 w-36 max-w-full" /></div>
+          : settingsQuery.isError ? <div role="alert"><p className="text-sm font-medium">No pudimos cargar la información del negocio</p><Button variant="outline" size="sm" className="mt-2 shadow-none" onClick={() => settingsQuery.refetch()} disabled={settingsQuery.isFetching}><RotateCw className={settingsQuery.isFetching ? "animate-spin" : ""} />Reintentar información</Button></div>
+          : settings ? <><p className="break-words text-sm font-medium">{settings.business_name}</p><p className="mt-1 text-xs text-muted-foreground">Anticipo: {settings.deposit_percentage}% · Moneda: {settings.currency}</p></>
+          : <p role="status" className="text-sm text-muted-foreground">Información del negocio no disponible</p>}
+        </div>
+      </div>
       <ol className="grid grid-cols-2 gap-5 border-y border-border py-6 sm:grid-cols-4">{["Servicio", "Fecha y hora", "Tus datos", "Confirmación"].map((label, index) => <li key={label} className={`flex items-center gap-3 text-sm ${index === 0 ? "text-foreground" : "text-muted-foreground"}`}><span className={`flex size-7 shrink-0 items-center justify-center rounded-full text-xs ${index === 0 ? "bg-secondary text-foreground" : "border border-border"}`}>{index + 1}</span>{label}</li>)}</ol>
       <div className="mt-10 grid gap-10 md:grid-cols-[1fr_300px]">
         <section aria-busy={isLoading}>
@@ -62,6 +73,7 @@ function Booking() {
           <Button disabled={selected.length === 0} className="mt-7 h-11 w-full shadow-none">Continuar<ChevronRight /></Button>
         </aside>
       </div>
+      <BookingPaymentSettings settings={settings ?? null} stage="services" />
     </main>
     <footer className="mx-auto max-w-5xl border-t border-border px-6 py-6 text-xs text-muted-foreground">CITAE · Tu tiempo, mejor organizado.</footer>
   </div>;
