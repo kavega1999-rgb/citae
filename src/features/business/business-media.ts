@@ -28,7 +28,9 @@ export function useMediaUrls(paths: string[]) {
     queryFn: async () => {
       const { data, error } = await supabase.storage.from(MEDIA_BUCKET).createSignedUrls(clean, 3600);
       if (error) throw error;
-      return Object.fromEntries((data ?? []).filter(d => d.signedUrl && d.path).map(d => [d.path as string, d.signedUrl]));
+      const urls: Record<string, string> = {};
+      for (const d of data ?? []) if (d.path && d.signedUrl) urls[d.path] = d.signedUrl;
+      return urls;
     },
   });
   return query.data ?? {} as Record<string, string>;
