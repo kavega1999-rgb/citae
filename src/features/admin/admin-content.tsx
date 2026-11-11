@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { brandStyle } from '@/features/business/business-media';
 import { Link } from '@tanstack/react-router';
 import { loadMyBusiness } from '@/features/business/business.functions';
 import { BusinessOnboarding } from '@/features/business/business-onboarding';
@@ -37,6 +38,8 @@ export function AdminContent({view}: {view:AdminView}) {
  const fetchBusiness = useServerFn(loadMyBusiness);
  const business = useQuery({queryKey:['my-business',session.data?.id],queryFn:()=>fetchBusiness(),enabled:!!session.data,retry:false});
  const query = useQuery({queryKey:['admin-data',session.data?.id],queryFn:()=>fetch(),enabled:!!session.data&&!!business.data,retry:false});
+ const brandPrimary=session.data?business.data?.primary_color:null, brandSecondary=session.data?business.data?.secondary_color:null;
+ useEffect(()=>{const root=document.documentElement;const vars=brandStyle(brandPrimary,brandSecondary) as Record<string,string>;for(const [k,v] of Object.entries(vars))root.style.setProperty(k,v);return()=>{for(const k of Object.keys(vars))root.style.removeProperty(k);};},[brandPrimary,brandSecondary]);
  const [editor,setEditor] = useState<{table:string;row:Row;title:string}|null>(null);
  const [busy,setBusy] = useState(false), [search,setSearch] = useState(''), [filter,setFilter] = useState(''), [date,setDate]=useState('');
  const [email,setEmail]=useState(''), [password,setPassword]=useState(''), [error,setError]=useState('');
