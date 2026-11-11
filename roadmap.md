@@ -11,6 +11,7 @@
 - [x] Run tests and verify live settings, error and missing states on desktop and mobile.
 
 ## Complete system using existing Supabase
+- [ ] Fix payment-proof registration rejected by existing RPC permissions; explain client confirmation delivery.
 - [x] Connect administrative sign-in and owner-authorized data access.
 - [x] Enable services, clients, settings, working hours and blocked times editing.
 - [x] Connect reservation lists, calendar, notes, cancellation and payment review.
