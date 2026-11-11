@@ -16,6 +16,7 @@ import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as ConfiguracionRouteImport } from './routes/configuracion'
 import { Route as PagosRouteImport } from './routes/pagos'
 import { Route as RecuperarRouteImport } from './routes/recuperar'
+import { Route as RegistroRouteImport } from './routes/registro'
 import { Route as ReservasRouteImport } from './routes/reservas'
 import { Route as ServiciosRouteImport } from './routes/servicios'
 
@@ -54,6 +55,11 @@ const RecuperarRoute = RecuperarRouteImport.update({
   path: '/recuperar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegistroRoute = RegistroRouteImport.update({
+  id: '/registro',
+  path: '/registro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReservasRoute = ReservasRouteImport.update({
   id: '/reservas',
   path: '/reservas',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/configuracion': typeof ConfiguracionRoute
   '/pagos': typeof PagosRoute
   '/recuperar': typeof RecuperarRoute
+  '/registro': typeof RegistroRoute
   '/reservas': typeof ReservasRoute
   '/servicios': typeof ServiciosRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/configuracion': typeof ConfiguracionRoute
   '/pagos': typeof PagosRoute
   '/recuperar': typeof RecuperarRoute
+  '/registro': typeof RegistroRoute
   '/reservas': typeof ReservasRoute
   '/servicios': typeof ServiciosRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/configuracion': typeof ConfiguracionRoute
   '/pagos': typeof PagosRoute
   '/recuperar': typeof RecuperarRoute
+  '/registro': typeof RegistroRoute
   '/reservas': typeof ReservasRoute
   '/servicios': typeof ServiciosRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/pagos'
     | '/recuperar'
+    | '/registro'
     | '/reservas'
     | '/servicios'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/pagos'
     | '/recuperar'
+    | '/registro'
     | '/reservas'
     | '/servicios'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/configuracion'
     | '/pagos'
     | '/recuperar'
+    | '/registro'
     | '/reservas'
     | '/servicios'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   ConfiguracionRoute: typeof ConfiguracionRoute
   PagosRoute: typeof PagosRoute
   RecuperarRoute: typeof RecuperarRoute
+  RegistroRoute: typeof RegistroRoute
   ReservasRoute: typeof ReservasRoute
   ServiciosRoute: typeof ServiciosRoute
 }
@@ -198,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecuperarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/registro': {
+      id: '/registro'
+      path: '/registro'
+      fullPath: '/registro'
+      preLoaderRoute: typeof RegistroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reservas': {
       id: '/reservas'
       path: '/reservas'
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConfiguracionRoute: ConfiguracionRoute,
   PagosRoute: PagosRoute,
   RecuperarRoute: RecuperarRoute,
+  RegistroRoute: RegistroRoute,
   ReservasRoute: ReservasRoute,
   ServiciosRoute: ServiciosRoute,
 }
