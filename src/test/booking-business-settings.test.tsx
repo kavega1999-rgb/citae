@@ -11,7 +11,7 @@ const settings: PublicBookingSettings = {
   timezone: "America/Bogota", buffer_minutes: 15, hold_minutes: 60,
   nequi_number: "test-nequi", daviplata_number: null, bank_name: "Test bank",
   account_type: "Test type", account_number: "test-account", account_holder: "Test holder",
-  payment_instructions: "Test instructions",
+  payment_instructions: "Test instructions", requires_deposit: true, cancellation_policy: "",
 };
 
 describe("public business settings", () => {

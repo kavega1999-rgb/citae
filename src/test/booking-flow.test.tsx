@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 vi.mock('@/integrations/supabase/client',()=>({supabase:{rpc:vi.fn()}}));
 vi.mock('@tanstack/react-start',()=>({useServerFn:vi.fn(),createServerFn:()=>({inputValidator:()=>({handler:()=>vi.fn()})})}));
 afterEach(()=>{cleanup();vi.clearAllMocks();});
-const settings={business_name:'Test only',timezone:'America/Bogota',currency:'COP',deposit_percentage:30,buffer_minutes:15,hold_minutes:60,payment_instructions:null,nequi_number:'test',daviplata_number:null,bank_name:null,account_type:null,account_number:null,account_holder:null};
+const settings={business_name:'Test only',timezone:'America/Bogota',currency:'COP',deposit_percentage:30,buffer_minutes:15,hold_minutes:60,payment_instructions:null,nequi_number:'test',daviplata_number:null,bank_name:null,account_type:null,account_number:null,account_holder:null,requires_deposit:true,cancellation_policy:''};
 const slot={slot_start:'2026-11-12T14:00:00Z',slot_end:'2026-11-12T14:45:00Z',total_amount:25000,total_duration_minutes:45};
 function mockRpc(pros:unknown[],created?:unknown){vi.mocked(supabase.rpc).mockImplementation(((name:string)=>Promise.resolve({data:name==='get_public_professionals'?pros:name==='get_available_slots'?[slot]:[created],error:null})) as never);}
 describe('booking flow',()=>{
@@ -49,6 +49,21 @@ describe('booking flow',()=>{
   await waitFor(()=>expect(onCreated).toHaveBeenCalledWith(created));
   expect(supabase.rpc).toHaveBeenLastCalledWith('create_public_appointment_v2',expect.objectContaining({p_business_slug:'consultorio',p_service_ids:['real-service-id'],p_start_at:'2026-11-12T14:00:00Z',p_payment_method:'nequi'}));
   expect(supabase.rpc).toHaveBeenCalledWith('get_available_slots',expect.objectContaining({p_business_slug:'consultorio',p_service_ids:['real-service-id']}));
+ });
+ it('skips the payment method when the business does not require a deposit',async()=>{
+  const created={appointment_id:'id',payment_id:null,payment_amount:0,total_amount:25000,payment_deadline_at:null,access_token:'a'.repeat(64)};
+  mockRpc([],created);
+  const onCreated=vi.fn(),client=new QueryClient({defaultOptions:{queries:{retry:false}}});
+  const props={slug:'consultorio',ids:['s'],settings:{...settings,requires_deposit:false},onBack:vi.fn(),onCreated,onTime:vi.fn()};
+  const view=render(<QueryClientProvider client={client}><BookingSteps stage="date" {...props}/></QueryClientProvider>);
+  fireEvent.change(screen.getByLabelText('Fecha'),{target:{value:'2026-11-12'}});
+  fireEvent.click(await screen.findByRole('button',{name:/9:00/}));
+  view.rerender(<QueryClientProvider client={client}><BookingSteps stage="details" {...props}/></QueryClientProvider>);
+  expect(screen.queryByText('Medio de pago del anticipo')).toBeNull();
+  fireEvent.change(screen.getByLabelText('Nombre completo'),{target:{value:'Test'}});
+  fireEvent.change(screen.getByLabelText('Teléfono'),{target:{value:'300'}});
+  fireEvent.submit(screen.getByRole('button',{name:'Crear reserva'}).closest('form') as HTMLFormElement);
+  await waitFor(()=>expect(onCreated).toHaveBeenCalledWith(created));
  });
  it('uses the business timezone for dates',()=>{expect(localDate('America/Bogota',new Date('2026-11-12T02:00:00Z'))).toBe('2026-11-11');});
  it('accepts only supported proof types',()=>{expect(proofExtension({type:'image/jpeg',size:100})).toBe('jpg');expect(()=>proofExtension({type:'text/html',size:100})).toThrow();});

@@ -347,6 +347,7 @@ export type Database = {
           id: string
           nequi_number: string | null
           payment_instructions: string | null
+          requires_deposit: boolean
           singleton_key: boolean
           timezone: string
           updated_at: string
@@ -368,6 +369,7 @@ export type Database = {
           id?: string
           nequi_number?: string | null
           payment_instructions?: string | null
+          requires_deposit?: boolean
           singleton_key?: boolean
           timezone?: string
           updated_at?: string
@@ -389,6 +391,7 @@ export type Database = {
           id?: string
           nequi_number?: string | null
           payment_instructions?: string | null
+          requires_deposit?: boolean
           singleton_key?: boolean
           timezone?: string
           updated_at?: string
@@ -889,12 +892,14 @@ export type Database = {
           bank_name: string
           buffer_minutes: number
           business_name: string
+          cancellation_policy: string
           currency: string
           daviplata_number: string
           deposit_percentage: number
           hold_minutes: number
           nequi_number: string
           payment_instructions: string
+          requires_deposit: boolean
           timezone: string
         }[]
       }

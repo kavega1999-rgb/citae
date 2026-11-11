@@ -42,3 +42,13 @@ describe('direct WhatsApp confirmation', () => {
     expect(buildWhatsAppConfirmation({ ...appointment, clients: { full_name: 'Ana', phone: '' } }, payments, settings).url).toBeNull();
   });
 });
+import { buildWhatsAppConfirmation as build2 } from '@/features/admin/whatsapp-confirmation';
+import { it as it2, expect as expect2 } from 'vitest';
+it2('allows confirmation without deposit when the reservation has no payment', () => {
+  const r = build2({ id: 'a', status: 'confirmed', start_at: '2026-11-12T14:00:00Z', duration_minutes: 45, total_amount: 25000, clients: { full_name: 'Test', phone: '3001234567' }, appointment_services: [{ service_name: 'S' }] }, [], { business_name: 'B', timezone: 'America/Bogota', cancellation_policy: null });
+  expect2(r.url).toContain('wa.me/573001234567');
+  expect2(decodeURIComponent(r.url ?? '')).toContain('Pagas el total en el establecimiento.');
+});
+it2('still blocks when a deposit exists but is not approved', () => {
+  expect2(build2({ id: 'a', status: 'confirmed', start_at: '2026-11-12T14:00:00Z', duration_minutes: 45, total_amount: 25000, clients: { full_name: 'T', phone: '3001234567' }, appointment_services: [] }, [{ appointment_id: 'a', status: 'under_review', amount: 1 }], { business_name: 'B', timezone: 'America/Bogota', cancellation_policy: null }).url).toBeNull();
+});
