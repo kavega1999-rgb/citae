@@ -25,3 +25,11 @@ export const switchBusiness = createServerFn({ method: 'POST' }).middleware([req
     if (error) throw new Error(error.message);
     return true;
   });
+
+export const deleteMyBusiness = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ id: z.string().uuid() }))
+  .handler(async ({ context, data }) => {
+    const { error } = await context.supabase.rpc('delete_my_business' as never, { p_business_id: data.id } as never);
+    if (error) throw new Error(error.message);
+    return true;
+  });
