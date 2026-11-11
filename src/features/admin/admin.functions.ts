@@ -29,7 +29,7 @@ export const loadAdmin = createServerFn({ method: 'POST' }).middleware([requireS
  const results = await Promise.all([
  db.from('services').select('*').order('display_order').limit(500),
  db.from('clients').select('*').order('created_at', { ascending: false }).limit(500),
- db.from('appointments').select('id,client_id,start_at,end_at,duration_minutes,total_amount,status,admin_notes,client_notes,cancellation_reason,payment_deadline_at,clients(full_name,phone),appointment_services(service_name,unit_price,duration_minutes)').order('start_at', { ascending: false }).limit(500),
+ db.from('appointments').select('id,client_id,start_at,end_at,duration_minutes,total_amount,status,admin_notes,client_notes,cancellation_reason,payment_deadline_at,clients!appointments_client_id_fkey(full_name,phone),appointment_services!appointment_services_appointment_id_fkey(service_name,unit_price,duration_minutes)').order('start_at', { ascending: false }).limit(500),
  db.from('payments').select('*').order('created_at', { ascending: false }).limit(500),
  db.from('business_settings').select('*').limit(1),
  db.from('business_hours').select('*').order('weekday').limit(500),
