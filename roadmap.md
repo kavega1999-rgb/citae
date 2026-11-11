@@ -1,5 +1,7 @@
 # CITAE visual redesign
 
+- [x] Refresh all screens with Sora/Manrope, a cleaner CITAE palette, clearer hierarchy and mobile-friendly controls; preserve connected operations. All 25 tests pass; desktop/mobile layouts and navigation checked without overflow or runtime errors. Authenticated admin views remain unavailable for live inspection.
+
 - [x] Apply CITAE identity and shared visual system.
 - [x] Present administrative views with neutral unavailable-data states.
 - [x] Present the public booking experience without changing booking logic.
