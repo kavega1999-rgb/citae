@@ -39,7 +39,7 @@ use the editor.
 - Keep payment configuration in a stage-gated presentation component; only the payment stage may render identifiers or instructions, without inventing unfinished booking steps.
 
 ## Connected operations
-- Keep businesses isolated through protected user_roles memberships and business_id RLS/composite relationships; new membership creation is atomic through create_my_business, never from editable account metadata.
+- Keep businesses isolated through protected user_roles memberships and business_id RLS/composite relationships; new membership creation is atomic through create_my_business, never from editable account metadata. An owner may hold several businesses; current_business_id follows profiles.active_business_id, changed only through the membership-checked set_active_business RPC.
 - Resolve public booking data by the business slug through existing RPCs; retain the legacy pilot default and scope query/storage keys by business to prevent mixed catalogs or recovered appointments.
 - Generate direct WhatsApp confirmations from confirmed appointments with approved deposits (or no deposit rows when the business disables deposits), using a shared browser-safe formatter and an editable per-send dialog; never treat opening WhatsApp as delivery or prefill access tokens, internal notes or payment identifiers.
 - Keep admin reads and mutations in authenticated server functions, checking the tenant-aware is_admin RPC and retaining user-scoped RLS; profiles.role is not an authorization source.
