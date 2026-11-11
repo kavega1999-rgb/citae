@@ -13,4 +13,15 @@ export const createMyBusiness = createServerFn({ method: 'POST' }).middleware([r
     const result = await context.supabase.rpc('create_my_business', { p_name: data.name, p_slug: data.slug, p_activity: data.activity, p_agenda_mode: data.mode });
     if (result.error) throw new Error(result.error.code === '23505' ? 'Ese enlace ya está ocupado. Elige otro.' : result.error.message);
     return result.data;
+  });export const listMyBusinesses = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).handler(async ({ context }) => {
+  const { data, error } = await context.supabase.rpc('list_my_businesses');
+  if (error) throw new Error(error.message);
+  return data ?? [];
+});
+export const switchBusiness = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth])
+  .inputValidator(z.object({ id: z.string().uuid() }))
+  .handler(async ({ context, data }) => {
+    const { error } = await context.supabase.rpc('set_active_business', { p_business_id: data.id });
+    if (error) throw new Error(error.message);
+    return true;
   });
