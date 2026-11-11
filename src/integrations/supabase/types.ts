@@ -692,6 +692,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          active_business_id: string | null
           created_at: string
           full_name: string
           id: string
@@ -699,6 +700,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          active_business_id?: string | null
           created_at?: string
           full_name: string
           id: string
@@ -706,13 +708,22 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          active_business_id?: string | null
           created_at?: string
           full_name?: string
           id?: string
           role?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_active_business_id_fkey"
+            columns: ["active_business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
@@ -946,11 +957,21 @@ export type Database = {
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
+      list_my_businesses: {
+        Args: never
+        Returns: {
+          id: string
+          is_active: boolean
+          name: string
+          slug: string
+        }[]
+      }
       reject_payment: {
         Args: { p_payment_id: string; p_rejection_reason: string }
         Returns: boolean
       }
       resolve_booking_business: { Args: { p_slug?: string }; Returns: string }
+      set_active_business: { Args: { p_business_id: string }; Returns: boolean }
       submit_payment_proof: {
         Args: {
           p_appointment_id: string
