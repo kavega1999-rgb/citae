@@ -1,7 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 const mock=vi.hoisted(()=>({rpc:vi.fn(),list:vi.fn()}));
 vi.mock('@/integrations/supabase/client.server',()=>({supabaseAdmin:{rpc:mock.rpc,storage:{from:()=>({list:mock.list})}}}));
-vi.mock('@tanstack/react-start',()=>({createServerFn:()=>({inputValidator:(schema:{parse:(v:unknown)=>unknown})=>({handler:(fn:(v:{data:unknown})=>unknown)=>(input:{data:unknown})=>fn({data:schema.parse(input.data)})})}));
+vi.mock('@tanstack/react-start',()=>({
+ createServerFn:()=>({
+  inputValidator:(schema:{parse:(v:unknown)=>unknown})=>({
+   handler:(fn:(v:{data:unknown})=>unknown)=>(input:{data:unknown})=>fn({data:schema.parse(input.data)})
+  })
+ })
+}));
 import { registerProof } from '@/features/booking/proof.functions';
 const appointmentId='4f35c2ea-d77f-4de0-9054-fbffdcd8bd77', token='a'.repeat(64),filename='d92080a8-6356-45f1-9e6c-b3592a7ad2d3.png';
 const input={appointmentId,token,path:`${appointmentId}/${filename}`};
