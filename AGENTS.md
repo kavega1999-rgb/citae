@@ -51,3 +51,4 @@ use the editor.
 - Issue signed proof uploads only after validating the reservation token, status and deadline, and restrict paths to that reservation; the existing private bucket has no public insert policy.
 - Register uploaded proofs through a token-validated server function calling the existing submit_payment_proof RPC; browser roles lack execute permission and must not gain broader grants.
 - Keep reservation access tokens out of URLs and shared logs; session storage and user-requested access files retain the capability without exposing it through referrers.
+- New-booking alerts use Web Push: a messaging-only public/push-sw.js (no caching), owner devices in push_subscriptions, and a public notifyNewBooking server fn authorized by the reservation token; why: workers-safe, no per-message cost.

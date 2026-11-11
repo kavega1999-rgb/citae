@@ -5,6 +5,7 @@ import { BookingSteps } from '@/features/booking/booking-steps';
 import { proofExtension, localDate } from '@/features/booking/booking-utils';
 import { supabase } from '@/integrations/supabase/client';
 vi.mock('@/integrations/supabase/client',()=>({supabase:{rpc:vi.fn()}}));
+vi.mock('@/features/notifications/push.functions',()=>({notifyNewBooking:vi.fn(()=>Promise.resolve(true))}));
 vi.mock('@tanstack/react-start',()=>({useServerFn:vi.fn(),createServerFn:()=>({inputValidator:()=>({handler:()=>vi.fn()})})}));
 afterEach(()=>{cleanup();vi.clearAllMocks();});
 const settings={business_name:'Test only',timezone:'America/Bogota',currency:'COP',deposit_percentage:30,buffer_minutes:15,hold_minutes:60,payment_instructions:null,nequi_number:'test',daviplata_number:null,bank_name:null,account_type:null,account_number:null,account_holder:null,requires_deposit:true,cancellation_policy:''};
