@@ -102,6 +102,7 @@ export type Database = {
           end_at: string
           id: string
           payment_deadline_at: string | null
+          professional_id: string | null
           start_at: string
           status: string
           total_amount: number
@@ -122,6 +123,7 @@ export type Database = {
           end_at: string
           id?: string
           payment_deadline_at?: string | null
+          professional_id?: string | null
           start_at: string
           status?: string
           total_amount: number
@@ -142,6 +144,7 @@ export type Database = {
           end_at?: string
           id?: string
           payment_deadline_at?: string | null
+          professional_id?: string | null
           start_at?: string
           status?: string
           total_amount?: number
@@ -174,6 +177,13 @@ export type Database = {
             columns: ["business_id", "client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["business_id", "id"]
+          },
+          {
+            foreignKeyName: "appointments_tenant_professional"
+            columns: ["business_id", "professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
             referencedColumns: ["business_id", "id"]
           },
         ]
@@ -400,7 +410,10 @@ export type Database = {
           created_at: string
           id: string
           is_legacy: boolean
+          logo_path: string | null
           name: string
+          primary_color: string | null
+          secondary_color: string | null
           slug: string
           updated_at: string
         }
@@ -410,7 +423,10 @@ export type Database = {
           created_at?: string
           id?: string
           is_legacy?: boolean
+          logo_path?: string | null
           name: string
+          primary_color?: string | null
+          secondary_color?: string | null
           slug: string
           updated_at?: string
         }
@@ -420,7 +436,10 @@ export type Database = {
           created_at?: string
           id?: string
           is_legacy?: boolean
+          logo_path?: string | null
           name?: string
+          primary_color?: string | null
+          secondary_color?: string | null
           slug?: string
           updated_at?: string
         }
@@ -540,6 +559,130 @@ export type Database = {
             columns: ["verified_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_hours: {
+        Row: {
+          business_id: string
+          closes_at: string
+          created_at: string
+          id: string
+          opens_at: string
+          professional_id: string
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          business_id?: string
+          closes_at: string
+          created_at?: string
+          id?: string
+          opens_at: string
+          professional_id: string
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          business_id?: string
+          closes_at?: string
+          created_at?: string
+          id?: string
+          opens_at?: string
+          professional_id?: string
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_hours_tenant_professional"
+            columns: ["business_id", "professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["business_id", "id"]
+          },
+        ]
+      }
+      professional_services: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          professional_id: string
+          service_id: string
+        }
+        Insert: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          professional_id: string
+          service_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          professional_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_services_tenant_professional"
+            columns: ["business_id", "professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["business_id", "id"]
+          },
+          {
+            foreignKeyName: "professional_services_tenant_service"
+            columns: ["business_id", "service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["business_id", "id"]
+          },
+        ]
+      }
+      professionals: {
+        Row: {
+          business_id: string
+          created_at: string
+          display_order: number
+          full_name: string
+          id: string
+          is_active: boolean
+          photo_path: string | null
+          specialty: string | null
+          updated_at: string
+        }
+        Insert: {
+          business_id?: string
+          created_at?: string
+          display_order?: number
+          full_name: string
+          id?: string
+          is_active?: boolean
+          photo_path?: string | null
+          specialty?: string | null
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          display_order?: number
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          photo_path?: string | null
+          specialty?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professionals_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
         ]
@@ -691,6 +834,7 @@ export type Database = {
           p_full_name: string
           p_payment_method: string
           p_phone: string
+          p_professional_id?: string
           p_service_ids: string[]
           p_start_at: string
         }
@@ -709,6 +853,7 @@ export type Database = {
         Args: {
           p_business_slug?: string
           p_date: string
+          p_professional_id?: string
           p_service_ids: string[]
         }
         Returns: {
@@ -724,7 +869,10 @@ export type Database = {
           activity: string
           agenda_mode: string
           id: string
+          logo_path: string
           name: string
+          primary_color: string
+          secondary_color: string
           slug: string
         }[]
       }
@@ -756,7 +904,10 @@ export type Database = {
           activity: string
           agenda_mode: string
           id: string
+          logo_path: string
           name: string
+          primary_color: string
+          secondary_color: string
           slug: string
         }[]
       }
@@ -766,6 +917,16 @@ export type Database = {
           closes_at: string
           opens_at: string
           weekday: number
+        }[]
+      }
+      get_public_professionals: {
+        Args: { p_business_slug: string; p_service_ids?: string[] }
+        Returns: {
+          display_order: number
+          full_name: string
+          id: string
+          photo_path: string
+          specialty: string
         }[]
       }
       get_public_services: {
