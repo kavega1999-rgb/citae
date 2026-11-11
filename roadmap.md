@@ -1,5 +1,12 @@
 # CITAE visual redesign
 
+## Professional scheduling
+- [x] Make professional weekly hours authoritative, with business hours as fallback for professionals without their own schedule.
+- [x] Add business/professional closures by hours or whole dates, hidden from public availability.
+- [x] Enable safe appointment rescheduling without changing services or payments.
+- [x] Run scheduling tests and public desktop/mobile checks; preview builds successfully.
+- [ ] Verify closures and appointment moves in the authenticated live UI: external Supabase has no available managed session.
+
 ## Multi-business CITAE
 - [x] Generate the client link automatically from the business name during business creation, with an optional manual override and a short-link warning; 9 focused tests pass, full suite 47 pass, preview build OK.
 - [x] Enable business-owner registration, separate business configuration and shareable booking links; support a business agenda and a solo professional while preserving pilot records and securing tenant isolation. 30 tests pass; two-business database tests ran with rolled-back fixtures; real pilot catalog and availability checked on desktop/mobile.

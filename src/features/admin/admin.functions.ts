@@ -9,7 +9,7 @@ const service = z.object({ name: text, description: optional, price: z.number().
 const client = z.object({ full_name: text, phone: text.max(30), email: z.union([z.string().email(), z.literal(''), z.null()]).default(null), notes: optional });
 const settings = z.object({ business_name: text, timezone: text.refine(v => { try { new Intl.DateTimeFormat('es', { timeZone: v }); return true; } catch { return false; } }, 'Zona horaria inválida'), currency: z.literal('COP'), requires_deposit: z.boolean().default(true), deposit_percentage: z.number().min(0).max(100), buffer_minutes: z.number().int().nonnegative(), hold_minutes: z.number().int().positive(), cancellation_policy: optional, payment_instructions: optional, nequi_number: optional, daviplata_number: optional, bank_name: optional, account_type: optional, account_number: optional, account_holder: optional });
 const hours = z.object({ weekday: z.number().int().min(0).max(6), opens_at: text, closes_at: text, interval_minutes: z.number().int().positive(), slot_mode: z.enum(['interval','specific']), is_active: z.boolean() }).refine(v => v.closes_at > v.opens_at, 'El cierre debe ser posterior a la apertura');
-const block = z.object({ start_at: z.string().datetime({ offset: true }), end_at: z.string().datetime({ offset: true }), reason: optional }).refine(v => Date.parse(v.end_at) > Date.parse(v.start_at), 'El final debe ser posterior al inicio');
+const block = z.object({ start_at: z.string().datetime({ offset: true }), end_at: z.string().datetime({ offset: true }), reason: optional, professional_id: id.nullable().default(null) }).refine(v => Date.parse(v.end_at) > Date.parse(v.start_at), 'El final debe ser posterior al inicio');
 export const editSchema = z.discriminatedUnion('table', [
  z.object({ table: z.literal('services'), id: id.optional(), values: service }),
  z.object({ table: z.literal('clients'), id: id.optional(), values: client }),
@@ -36,9 +36,10 @@ export const loadAdmin = createServerFn({ method: 'POST' }).middleware([requireS
  db.from('business_hour_slots').select('*').order('slot_time').limit(500),
  db.from('blocked_slots').select('*').order('start_at').limit(500),
  db.from('professionals').select('id,full_name,specialty,is_active').order('display_order').limit(200),
+ db.from('professional_hours').select('*').order('weekday').order('opens_at').limit(1000),
  ]);
  for (const r of results) if (r.error) throw new Error(r.error.message);
- return { services: results[0].data ?? [], clients: results[1].data ?? [], appointments: results[2].data ?? [], payments: results[3].data ?? [], settings: results[4].data?.[0] ?? null, hours: results[5].data ?? [], slots: results[6].data ?? [], blocks: results[7].data ?? [], professionals: results[8].data ?? [] };
+ return { services: results[0].data ?? [], clients: results[1].data ?? [], appointments: results[2].data ?? [], payments: results[3].data ?? [], settings: results[4].data?.[0] ?? null, hours: results[5].data ?? [], slots: results[6].data ?? [], blocks: results[7].data ?? [], professionals: results[8].data ?? [], professionalHours: results[9].data ?? [] };
 });
 export const saveAdmin = createServerFn({ method: 'POST' }).middleware([requireSupabaseAuth]).inputValidator((v: unknown) => editSchema.parse(v)).handler(async ({ data, context }) => {
  await owner(context.supabase);

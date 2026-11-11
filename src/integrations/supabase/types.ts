@@ -195,6 +195,7 @@ export type Database = {
           created_by: string | null
           end_at: string
           id: string
+          professional_id: string | null
           reason: string | null
           start_at: string
         }
@@ -204,6 +205,7 @@ export type Database = {
           created_by?: string | null
           end_at: string
           id?: string
+          professional_id?: string | null
           reason?: string | null
           start_at: string
         }
@@ -213,6 +215,7 @@ export type Database = {
           created_by?: string | null
           end_at?: string
           id?: string
+          professional_id?: string | null
           reason?: string | null
           start_at?: string
         }
@@ -230,6 +233,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blocked_slots_tenant_professional"
+            columns: ["business_id", "professional_id"]
+            isOneToOne: false
+            referencedRelation: "professionals"
+            referencedColumns: ["business_id", "id"]
           },
         ]
       }
@@ -813,6 +823,22 @@ export type Database = {
     }
     Functions: {
       approve_payment: { Args: { p_payment_id: string }; Returns: boolean }
+      booking_slots_internal: {
+        Args: {
+          p_business_slug: string
+          p_date: string
+          p_duration?: number
+          p_exclude?: string
+          p_professional_id: string
+          p_service_ids: string[]
+        }
+        Returns: {
+          slot_end: string
+          slot_start: string
+          total_amount: number
+          total_duration_minutes: number
+        }[]
+      }
       create_my_business: {
         Args: {
           p_activity: string
@@ -957,6 +983,19 @@ export type Database = {
           price: number
         }[]
       }
+      get_reschedule_slots: {
+        Args: {
+          p_appointment_id: string
+          p_date: string
+          p_professional_id?: string
+        }
+        Returns: {
+          slot_end: string
+          slot_start: string
+          total_amount: number
+          total_duration_minutes: number
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
       list_my_businesses: {
         Args: never
@@ -971,6 +1010,14 @@ export type Database = {
         Args: { p_payment_id: string; p_rejection_reason: string }
         Returns: boolean
       }
+      reschedule_appointment: {
+        Args: {
+          p_appointment_id: string
+          p_professional_id?: string
+          p_start_at: string
+        }
+        Returns: boolean
+      }
       resolve_booking_business: { Args: { p_slug?: string }; Returns: string }
       set_active_business: { Args: { p_business_id: string }; Returns: boolean }
       submit_payment_proof: {
@@ -981,6 +1028,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      validate_schedule_owner: { Args: { p_exclude: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
