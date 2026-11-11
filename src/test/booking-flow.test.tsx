@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 vi.mock('@/integrations/supabase/client',()=>({supabase:{rpc:vi.fn()}}));
 vi.mock('@tanstack/react-start',()=>({useServerFn:vi.fn(),createServerFn:()=>({inputValidator:()=>({handler:()=>vi.fn()})})}));
 afterEach(()=>{cleanup();vi.clearAllMocks();});
-const settings={business_name:'Test only',timezone:'America/Bogota',currency:'COP',deposit_percentage:30,buffer_minutes:15,hold_minutes:60,payment_instructions:null,nequi_number:'test',daviplata_number:null,bank_name:null,account_type:null,account_number:null,account_holder:null,requires_deposit:true,cancellation_policy:null};
+const settings={business_name:'Test only',timezone:'America/Bogota',currency:'COP',deposit_percentage:30,buffer_minutes:15,hold_minutes:60,payment_instructions:null,nequi_number:'test',daviplata_number:null,bank_name:null,account_type:null,account_number:null,account_holder:null,requires_deposit:true,cancellation_policy:''};
 const slot={slot_start:'2026-11-12T14:00:00Z',slot_end:'2026-11-12T14:45:00Z',total_amount:25000,total_duration_minutes:45};
 function mockRpc(pros:unknown[],created?:unknown){vi.mocked(supabase.rpc).mockImplementation(((name:string)=>Promise.resolve({data:name==='get_public_professionals'?pros:name==='get_available_slots'?[slot]:[created],error:null})) as never);}
 describe('booking flow',()=>{
