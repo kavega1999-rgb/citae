@@ -13,7 +13,7 @@ describe('booking flow',()=>{
   const created={appointment_id:'test-id',payment_id:'test-payment',payment_amount:7500,total_amount:25000,payment_deadline_at:'2026-11-12T15:00:00Z',access_token:'a'.repeat(64)};
   vi.mocked(supabase.rpc).mockResolvedValueOnce({data:[{slot_start:'2026-11-12T14:00:00Z',slot_end:'2026-11-12T14:45:00Z',total_amount:25000,total_duration_minutes:45}],error:null} as never).mockResolvedValueOnce({data:[created],error:null} as never);
   const onCreated=vi.fn(),client=new QueryClient({defaultOptions:{queries:{retry:false}}});
-  const props={ids:['real-service-id'],settings,onBack:vi.fn(),onCreated,onTime:vi.fn()};
+  const props={slug:'consultorio',ids:['real-service-id'],settings,onBack:vi.fn(),onCreated,onTime:vi.fn()};
   const view=render(<QueryClientProvider client={client}><BookingSteps stage="date" {...props}/></QueryClientProvider>);
   fireEvent.change(screen.getByLabelText('Fecha'),{target:{value:'2026-11-12'}});
   await waitFor(()=>expect(screen.getByRole('button',{name:/9:00/})).toBeInTheDocument());
@@ -24,7 +24,8 @@ describe('booking flow',()=>{
   fireEvent.click(screen.getByRole('radio',{name:'Nequi'}));
   fireEvent.submit(screen.getByRole('button',{name:'Crear reserva'}).closest('form') as HTMLFormElement);
   await waitFor(()=>expect(onCreated).toHaveBeenCalledWith(created));
-  expect(supabase.rpc).toHaveBeenLastCalledWith('create_public_appointment_v2',expect.objectContaining({p_service_ids:['real-service-id'],p_start_at:'2026-11-12T14:00:00Z',p_payment_method:'nequi'}));
+  expect(supabase.rpc).toHaveBeenLastCalledWith('create_public_appointment_v2',expect.objectContaining({p_business_slug:'consultorio',p_service_ids:['real-service-id'],p_start_at:'2026-11-12T14:00:00Z',p_payment_method:'nequi'}));
+  expect(supabase.rpc).toHaveBeenCalledWith('get_available_slots',expect.objectContaining({p_business_slug:'consultorio',p_service_ids:['real-service-id']}));
  });
  it('uses the business timezone for dates',()=>{expect(localDate('America/Bogota',new Date('2026-11-12T02:00:00Z'))).toBe('2026-11-11');});
  it('accepts only supported proof types',()=>{expect(proofExtension({type:'image/jpeg',size:100})).toBe('jpg');expect(()=>proofExtension({type:'text/html',size:100})).toThrow();});

@@ -15,6 +15,11 @@ const settings: PublicBookingSettings = {
 };
 
 describe("public business settings", () => {
+  it("scopes configuration to the business link", async () => {
+    vi.mocked(supabase.rpc).mockResolvedValue({ data: [settings], error: null } as never);
+    await fetchPublicBookingSettings('consultorio');
+    expect(supabase.rpc).toHaveBeenCalledExactlyOnceWith('get_public_booking_settings', { p_business_slug: 'consultorio' });
+  });
   it("consumes the existing public RPC and preserves returned values", async () => {
     vi.mocked(supabase.rpc).mockResolvedValue({ data: [settings], error: null } as never);
     expect(await fetchPublicBookingSettings()).toEqual(settings);
