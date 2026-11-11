@@ -1,5 +1,8 @@
 # CITAE visual redesign
 
+## Multi-business CITAE
+- [ ] Enable immediate business-owner registration, separate business configuration and shareable booking links; support a business agenda and a solo professional while preserving pilot records and securing tenant isolation.
+
 - [x] Refresh all screens with Sora/Manrope, a cleaner CITAE palette, clearer hierarchy and mobile-friendly controls; preserve connected operations. All 25 tests pass; desktop/mobile layouts and navigation checked without overflow or runtime errors. Authenticated admin views remain unavailable for live inspection.
 
 - [x] Apply CITAE identity and shared visual system.
