@@ -1,9 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowUpRight, CalendarDays, CalendarCheck2, CreditCard, LayoutDashboard, Menu, Settings2, Sparkles, Users, X, Clock3, CircleHelp, Store, ListFilter } from "lucide-react";
+import { ArrowUpRight, CalendarDays, CalendarCheck2, CreditCard, LayoutDashboard, Menu, Settings2, Sparkles, Users, X, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { es } from "date-fns/locale";
 import { AdminContent } from "@/features/admin/admin-content";
 
 const navigation = [
@@ -24,15 +22,8 @@ export function pageHead(title: string, description: string) {
 
 export function Wordmark() { return <span className="font-display text-[32px] leading-none">CITAE<span className="text-gold">.</span></span>; }
 
-function EmptyState({ icon: Icon = CalendarDays, title, detail }: { icon?: typeof CalendarDays | undefined; title: string; detail: string }) {
-  return <div className="flex min-h-60 flex-col items-center justify-center px-5 py-12 text-center"><span className="mb-5 flex size-12 items-center justify-center rounded-full bg-secondary text-primary"><Icon size={21} strokeWidth={1.4} /></span><h3 className="text-base font-medium">{title}</h3><p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">{detail}</p></div>;
-}
-
 export function AdminPage({ view = "Resumen" }: { view?: AdminView }) {
   const [open, setOpen] = useState(false);
-  const [period, setPeriod] = useState("Hoy");
-  const [date, setDate] = useState<Date>();
-  const item = navigation.find((entry) => entry.label === view);
   return <div className="min-h-screen bg-background font-sans">
     {open && <div className="fixed inset-0 z-30 bg-foreground/20 lg:hidden" onClick={() => setOpen(false)} />}
     <aside className={`fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-border bg-card px-6 py-9 transition-transform lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>

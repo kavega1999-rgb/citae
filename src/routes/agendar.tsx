@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, ArrowLeft, CalendarDays, Check, ChevronRight, Clock3, RotateCw, Store, X } from "lucide-react";
 import { Wordmark, pageHead } from "@/components/citae-shell";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchPublicBookingSettings } from "@/components/booking-business-settings";
 import { supabase } from "@/integrations/supabase/client";
@@ -67,6 +68,7 @@ function Booking() {
           {stage === "services" ? <>
           <h2 className="font-display text-3xl">Elige tus servicios</h2>
           <p className="mt-2 text-sm text-muted-foreground">Puedes seleccionar uno o varios.</p>
+          <label className="mt-5 block text-xs text-muted-foreground">Recuperar reserva guardada<Input className="mt-2 max-w-sm" type="file" accept="application/json" onChange={async e=>{const file=e.target.files?.[0];if(!file)return;try{const v=JSON.parse(await file.text());if(typeof v.appointment_id!=="string"||!/^[a-f0-9]{64}$/.test(v.access_token))throw new Error();const {error}=await supabase.rpc("get_public_appointment",{p_appointment_id:v.appointment_id,p_token:v.access_token});if(error)throw error;setCreated(v);setStage("payment");try{sessionStorage.setItem("citae-reservation",JSON.stringify(v));}catch{}}catch{window.alert("No pudimos recuperar esta reserva. Revisa el archivo de acceso.");}}} /></label>
           <div className="mt-6">
             {isLoading ? <div className="space-y-3">{[0, 1, 2].map((i) => <Skeleton key={i} className="h-24 w-full rounded-md bg-secondary/60" />)}</div>
             : isError ? <div role="alert" className="flex min-h-56 flex-col items-center justify-center rounded-md border border-border bg-card px-6 text-center"><AlertCircle size={28} strokeWidth={1.2} className="mb-4 text-primary" /><p className="font-medium">No pudimos cargar los servicios</p><p className="mt-2 max-w-xs text-sm text-muted-foreground">Revisa tu conexión e inténtalo de nuevo.</p><Button variant="outline" className="mt-5 shadow-none" onClick={() => refetch()} disabled={isFetching}><RotateCw className={isFetching ? "animate-spin" : ""} />Reintentar</Button></div>
