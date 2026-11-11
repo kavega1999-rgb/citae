@@ -1,6 +1,7 @@
 # CITAE visual redesign
 
 ## Multi-business CITAE
+- [x] Generate the client link automatically from the business name during business creation, with an optional manual override and a short-link warning; 9 focused tests pass, full suite 47 pass, preview build OK.
 - [x] Enable business-owner registration, separate business configuration and shareable booking links; support a business agenda and a solo professional while preserving pilot records and securing tenant isolation. 30 tests pass; two-business database tests ran with rolled-back fixtures; real pilot catalog and availability checked on desktop/mobile.
 - [ ] Verify complete signup/onboarding, copying a business link and authenticated payment approval through the live UI: external Supabase has no managed test session; email signup settings remain unverified.
 
