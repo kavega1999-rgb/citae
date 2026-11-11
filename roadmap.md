@@ -1,7 +1,8 @@
 # CITAE visual redesign
 
 ## Multi-business CITAE
-- [ ] Enable immediate business-owner registration, separate business configuration and shareable booking links; support a business agenda and a solo professional while preserving pilot records and securing tenant isolation.
+- [x] Enable business-owner registration, separate business configuration and shareable booking links; support a business agenda and a solo professional while preserving pilot records and securing tenant isolation. 30 tests pass; two-business database tests ran with rolled-back fixtures; real pilot catalog and availability checked on desktop/mobile.
+- [ ] Verify complete signup/onboarding, copying a business link and authenticated payment approval through the live UI: external Supabase has no managed test session; email signup settings remain unverified.
 
 - [x] Refresh all screens with Sora/Manrope, a cleaner CITAE palette, clearer hierarchy and mobile-friendly controls; preserve connected operations. All 25 tests pass; desktop/mobile layouts and navigation checked without overflow or runtime errors. Authenticated admin views remain unavailable for live inspection.
 
