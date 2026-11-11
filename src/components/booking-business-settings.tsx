@@ -7,8 +7,8 @@ export type PublicBookingSettings = Omit<SettingsRow, PaymentField> & {
   [K in PaymentField]: string | null;
 };
 
-export async function fetchPublicBookingSettings(): Promise<PublicBookingSettings | null> {
-  const { data, error } = await supabase.rpc("get_public_booking_settings");
+export async function fetchPublicBookingSettings(slug?: string): Promise<PublicBookingSettings | null> {
+  const { data, error } = slug ? await supabase.rpc("get_public_booking_settings", { p_business_slug: slug }) : await supabase.rpc("get_public_booking_settings");
   if (error) throw error;
   return data?.[0] ?? null;
 }
