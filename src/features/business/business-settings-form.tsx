@@ -9,7 +9,7 @@ export type SettingsValues = {
   buffer_minutes: number; hold_minutes: number; cancellation_policy: string | null; payment_instructions: string | null;
   nequi_number: string | null; daviplata_number: string | null; bank_name: string | null; account_type: string | null; account_number: string | null; account_holder: string | null;
 };
-type Row = Partial<SettingsValues> & { id?: string };
+type Row = Partial<Omit<SettingsValues, 'currency'>> & { id?: string; currency?: string };
 const ZONES = ['America/Bogota', 'America/Mexico_City', 'America/Lima', 'America/Guayaquil', 'America/Caracas', 'America/Santiago', 'America/Argentina/Buenos_Aires', 'America/New_York', 'Europe/Madrid'];
 const txt = (v: FormDataEntryValue | null) => { const s = String(v ?? '').trim(); return s || null; };
 
