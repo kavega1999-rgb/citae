@@ -30,7 +30,7 @@ describe("business link generation", () => {
   });
   it("blocks creation while the link is shorter than three characters", () => {
     render(<BusinessOnboarding onCreated={async () => {}} />);
-    fireEvent.change(screen.getByLabelText("Nombre del negocio"), { target: { value: "Spa" } });
+    fireEvent.change(screen.getByLabelText("Nombre del negocio"), { target: { value: "Sp" } });
     expect(screen.getByRole("button", { name: "Crear mi negocio" })).toBeDisabled();
     expect(screen.getByText(/al menos 3 caracteres/)).toBeDefined();
   });
