@@ -862,6 +862,7 @@ export type Database = {
         }[]
       }
       current_business_id: { Args: never; Returns: string }
+      delete_my_business: { Args: { p_business_id: string }; Returns: boolean }
       expire_pending_appointments: { Args: never; Returns: number }
       get_available_slots: {
         Args: {
