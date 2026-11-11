@@ -11,6 +11,7 @@
 - [x] Run tests and verify live settings, error and missing states on desktop and mobile.
 
 ## Complete system using existing Supabase
+- [x] Allow editing each WhatsApp confirmation before opening WhatsApp, with restoration of the original reservation message; eight focused tests pass and preview build OK. Live authenticated flow remains unverified without an external Supabase session.
 - [x] Add direct WhatsApp confirmation buttons in Pagos and Reservas, enabled after approval, with real booking details and approved-payment totals; no WhatsApp Business API. All 23 tests pass; preview build OK. Arrival instructions omitted because no existing field provides them; authenticated button flow awaits available external Supabase session.
 - [x] Fix payment-proof registration rejected by existing RPC permissions; explain client confirmation delivery.
 - [x] Connect administrative sign-in and owner-authorized data access.
