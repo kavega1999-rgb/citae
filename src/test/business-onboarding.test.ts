@@ -21,7 +21,7 @@ describe('business onboarding', () => {
     expect(mocks.rpc).toHaveBeenCalledWith('create_my_business', expect.objectContaining({ p_agenda_mode: 'solo' }));
   });
   it('does not accept sales as an agenda mode', async () => {
-    await expect(createMyBusiness({ data: { name: 'Prueba', slug: 'prueba', activity: 'Prueba', mode: 'sales' } } as never)).rejects.toThrow();
+    expect(() => createMyBusiness({ data: { name: 'Prueba', slug: 'prueba', activity: 'Prueba', mode: 'sales' } } as never)).toThrow();
     expect(mocks.rpc).not.toHaveBeenCalled();
   });
   it('reads only the signed-in user business and shows no invented business', async () => {
