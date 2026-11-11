@@ -41,7 +41,7 @@ use the editor.
 ## Connected operations
 - Keep businesses isolated through protected user_roles memberships and business_id RLS/composite relationships; new membership creation is atomic through create_my_business, never from editable account metadata.
 - Resolve public booking data by the business slug through existing RPCs; retain the legacy pilot default and scope query/storage keys by business to prevent mixed catalogs or recovered appointments.
-- Generate direct WhatsApp confirmations from confirmed appointments and approved payments only, using a shared browser-safe formatter and an editable per-send dialog; never treat opening WhatsApp as delivery or prefill access tokens, internal notes or payment identifiers.
+- Generate direct WhatsApp confirmations from confirmed appointments with approved deposits (or no deposit rows when the business disables deposits), using a shared browser-safe formatter and an editable per-send dialog; never treat opening WhatsApp as delivery or prefill access tokens, internal notes or payment identifiers.
 - Keep admin reads and mutations in authenticated server functions, checking the tenant-aware is_admin RPC and retaining user-scoped RLS; profiles.role is not an authorization source.
 - Use only create_public_appointment_v2 for public creation and get_available_slots for availability, passing the chosen professional when the business has active professionals; the RPCs remain authoritative for prices, scheduling and per-professional overlap.
 - Public booking lives only at /agenda/$slug; business colors apply as CSS variables scoped to that page, never to the CITAE shell.
