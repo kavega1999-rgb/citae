@@ -1,0 +1,32 @@
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { BookingSteps } from '@/features/booking/booking-steps';
+import { proofExtension, localDate } from '@/features/booking/booking-utils';
+import { supabase } from '@/integrations/supabase/client';
+vi.mock('@/integrations/supabase/client',()=>({supabase:{rpc:vi.fn()}}));
+vi.mock('@tanstack/react-start',()=>({useServerFn:vi.fn(),createServerFn:()=>({inputValidator:()=>({handler:()=>vi.fn()})})}));
+afterEach(()=>{cleanup();vi.clearAllMocks();});
+const settings={business_name:'Test only',timezone:'America/Bogota',currency:'COP',deposit_percentage:30,buffer_minutes:15,hold_minutes:60,payment_instructions:null,nequi_number:'test',daviplata_number:null,bank_name:null,account_type:null,account_number:null,account_holder:null};
+describe('booking flow',()=>{
+ it('creates bookings only through v2 with the selected actual slot and service IDs',async()=>{
+  const created={appointment_id:'test-id',payment_id:'test-payment',payment_amount:7500,total_amount:25000,payment_deadline_at:'2026-11-12T15:00:00Z',access_token:'a'.repeat(64)};
+  vi.mocked(supabase.rpc).mockResolvedValueOnce({data:[{slot_start:'2026-11-12T14:00:00Z',slot_end:'2026-11-12T14:45:00Z',total_amount:25000,total_duration_minutes:45}],error:null} as never).mockResolvedValueOnce({data:[created],error:null} as never);
+  const onCreated=vi.fn(),client=new QueryClient({defaultOptions:{queries:{retry:false}}});
+  const props={ids:['real-service-id'],settings,onBack:vi.fn(),onCreated,onTime:vi.fn()};
+  const view=render(<QueryClientProvider client={client}><BookingSteps stage="date" {...props}/></QueryClientProvider>);
+  fireEvent.change(screen.getByLabelText('Fecha'),{target:{value:'2026-11-12'}});
+  await waitFor(()=>expect(screen.getByRole('button',{name:/9:00/})).toBeInTheDocument());
+  fireEvent.click(screen.getByRole('button',{name:/9:00/}));
+  view.rerender(<QueryClientProvider client={client}><BookingSteps stage="details" {...props}/></QueryClientProvider>);
+  fireEvent.change(screen.getByLabelText('Nombre completo'),{target:{value:'Test client'}});
+  fireEvent.change(screen.getByLabelText('Teléfono'),{target:{value:'test-phone'}});
+  fireEvent.click(screen.getByRole('radio',{name:'Nequi'}));
+  fireEvent.submit(screen.getByRole('button',{name:'Crear reserva'}).closest('form') as HTMLFormElement);
+  await waitFor(()=>expect(onCreated).toHaveBeenCalledWith(created));
+  expect(supabase.rpc).toHaveBeenLastCalledWith('create_public_appointment_v2',expect.objectContaining({p_service_ids:['real-service-id'],p_start_at:'2026-11-12T14:00:00Z',p_payment_method:'nequi'}));
+ });
+ it('uses the business timezone for dates',()=>{expect(localDate('America/Bogota',new Date('2026-11-12T02:00:00Z'))).toBe('2026-11-11');});
+ it('accepts only supported proof types',()=>{expect(proofExtension({type:'image/jpeg',size:100})).toBe('jpg');expect(()=>proofExtension({type:'text/html',size:100})).toThrow();});
+ it('rejects files exceeding 5 MB',()=>{expect(()=>proofExtension({type:'application/pdf',size:5*1024*1024+1})).toThrow();});
+});
