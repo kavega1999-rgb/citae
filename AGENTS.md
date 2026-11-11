@@ -33,3 +33,7 @@ use the editor.
 - Keep administrative presentation in a shared UI module with thin, individually titled content routes so the product shell remains consistent.
 - Keep the public booking presentation separate from the administrative shell; business identity must not replace product identity.
 - Unconnected visual views show unavailable-data placeholders and never imply loaded records or perform business mutations.
+
+## Public booking settings
+- Read public business settings with the existing browser client RPC through React Query; never read the private settings table for public presentation.
+- Keep payment configuration in a stage-gated presentation component; only the payment stage may render identifiers or instructions, without inventing unfinished booking steps.
