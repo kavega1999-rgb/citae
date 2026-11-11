@@ -1,0 +1,13 @@
+DELETE FROM public.appointment_services WHERE business_id IS NOT NULL;
+DELETE FROM public.payments WHERE business_id IS NOT NULL;
+DELETE FROM public.appointments WHERE business_id IS NOT NULL;
+DELETE FROM public.clients WHERE business_id IS NOT NULL;
+DELETE FROM public.services WHERE business_id IS NOT NULL;
+DELETE FROM public.business_hour_slots WHERE business_id IS NOT NULL;
+DELETE FROM public.business_hours WHERE business_id IS NOT NULL;
+DELETE FROM public.blocked_slots WHERE business_id IS NOT NULL;
+DELETE FROM public.business_settings WHERE business_id IS NOT NULL;
+DELETE FROM public.user_roles WHERE user_id IS NOT NULL;
+DELETE FROM public.businesses WHERE id IS NOT NULL;
+DELETE FROM public.profiles WHERE id IS NOT NULL;
+DELETE FROM auth.users WHERE id IS NOT NULL;
