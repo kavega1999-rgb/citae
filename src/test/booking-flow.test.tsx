@@ -11,6 +11,25 @@ const settings={business_name:'Test only',timezone:'America/Bogota',currency:'CO
 const slot={slot_start:'2026-11-12T14:00:00Z',slot_end:'2026-11-12T14:45:00Z',total_amount:25000,total_duration_minutes:45};
 function mockRpc(pros:unknown[],created?:unknown){vi.mocked(supabase.rpc).mockImplementation(((name:string)=>Promise.resolve({data:name==='get_public_professionals'?pros:name==='get_available_slots'?[slot]:[created],error:null})) as never);}
 describe('booking flow',()=>{
+ it('does not request availability when active professionals cannot perform the selected services',async()=>{
+  vi.mocked(supabase.rpc).mockImplementation(((name:string,args:Record<string,unknown>)=>Promise.resolve({data:name==='get_public_professionals'&&!args['p_service_ids']?[{id:'pro-1',full_name:'Professional',photo_path:null}]:[],error:null})) as never);
+  const client=new QueryClient({defaultOptions:{queries:{retry:false}}});
+  render(<QueryClientProvider client={client}><BookingSteps slug="consultorio" stage="date" ids={['service-1']} settings={settings} onBack={vi.fn()} onCreated={vi.fn()} onTime={vi.fn()}/></QueryClientProvider>);
+  await waitFor(()=>expect(supabase.rpc).toHaveBeenCalledWith('get_public_professionals',{p_business_slug:'consultorio'}));
+  await waitFor(()=>expect(screen.getByLabelText('Fecha')).toBeDisabled());
+  fireEvent.change(screen.getByLabelText('Fecha'),{target:{value:'2026-11-17'}});
+  expect(supabase.rpc).not.toHaveBeenCalledWith('get_available_slots',expect.anything());
+ });
+ it('does not automatically retry a rejected availability request',async()=>{
+  vi.mocked(supabase.rpc).mockImplementation(((name:string)=>Promise.resolve({data:[],error:name==='get_available_slots'?{message:'Unavailable',code:'P0001'}:null})) as never);
+  const client=new QueryClient({defaultOptions:{queries:{retry:3,retryDelay:1}}});
+  render(<QueryClientProvider client={client}><BookingSteps slug="consultorio" stage="date" ids={['service-1']} settings={settings} onBack={vi.fn()} onCreated={vi.fn()} onTime={vi.fn()}/></QueryClientProvider>);
+  await waitFor(()=>expect(screen.getByLabelText('Fecha')).not.toBeDisabled());
+  fireEvent.change(screen.getByLabelText('Fecha'),{target:{value:'2026-11-17'}});
+  await screen.findByRole('alert');
+  await new Promise(r=>setTimeout(r,30));
+  expect(vi.mocked(supabase.rpc).mock.calls.filter(([name])=>name==='get_available_slots')).toHaveLength(1);
+ });
  it('requires choosing a professional when the business has them and books with that professional',async()=>{
   const created={appointment_id:'test-id',payment_id:'p',payment_amount:7500,total_amount:25000,payment_deadline_at:'2026-11-12T15:00:00Z',access_token:'a'.repeat(64)};
   mockRpc([{id:'pro-1',full_name:'Profesional de prueba',specialty:null,photo_path:null,display_order:0}],created);
